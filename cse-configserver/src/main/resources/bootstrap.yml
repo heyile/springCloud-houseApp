@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: ${APPLICATION_NAME:config-server}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

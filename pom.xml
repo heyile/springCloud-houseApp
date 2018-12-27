@@ -6,7 +6,13 @@
 
   <groupId>com.huawei</groupId>
   <artifactId>huawei-cse-springcloud</artifactId>
+  <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
+  <modules>
+    <module>cse-eureka</module>
+    <module>cse-account-service</module>
+    <module>cse-configserver</module>
+  </modules>
 
 
 </project>
