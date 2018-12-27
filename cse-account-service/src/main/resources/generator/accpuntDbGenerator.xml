@@ -30,9 +30,7 @@
 
     <table schema="account_db" tableName="t_account" enableCountByExample="false" enableDeleteByExample="false"
       enableSelectByExample="false" enableUpdateByExample="false">
-      <columnOverride column="ID" javaType="java.lang.Long"/>
-      <columnOverride column="RESERVED" javaType="java.lang.Boolean"/>
-      <columnOverride column="TOTAL_BALANCE" javaType="java.lang.Double"/>
+      <columnOverride column="REST_MONEY" javaType="java.lang.Double"/>
     </table>
 
   </context>
