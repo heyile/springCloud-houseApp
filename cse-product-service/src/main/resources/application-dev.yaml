@@ -1,0 +1,35 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+server:
+  port: 8083
+spring:
+  application:
+    name: product-service
+  datasource:
+    username: root
+    password: 102535@Yile
+    url: jdbc:mysql://localhost:3306/product_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    type: org.apache.commons.dbcp2.BasicDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  type-aliases-package: com.huawei.product.cseproductservice.entity
+  configuration:
+    map-underscore-to-camel-case: true # 配置 数据库 下划线映射 驼峰命名法
+    cache-enabled: false
+logging:
+  config: classpath:logback-spring.xml
+  level.org.springframework.boot.autoconfigure: error
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    enabled: true
+  instance:
+    prefer-ip-address: true
+    non-secure-port: 8083
+    non-secure-port-enabled: true
+    ip-address: 127.0.0.1

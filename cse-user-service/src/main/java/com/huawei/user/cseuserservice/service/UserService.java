@@ -43,12 +43,10 @@ public class UserService {
     return null;
   }
 
-  public int deleteUserById(String id) {
+  public void deleteUserById(String id) {
     int i = tUserMapper.deleteByPrimaryKey(id);
     if (i == 0) {
       logger.warn("the user {} may not exist ", id);
     }
-    return i;
   }
-
 }

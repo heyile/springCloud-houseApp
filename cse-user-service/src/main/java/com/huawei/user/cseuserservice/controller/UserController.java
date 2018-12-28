@@ -42,7 +42,7 @@ public class UserController {
       return ResponseEntity.badRequest().body("id can not be empty");
     }
     userService.deleteUserById(id);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(String.format("删除 %s成功", id));
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("删除 %s成功", id));
   }
 
   @GetMapping(value = "/getUserInfoById")
