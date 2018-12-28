@@ -20,7 +20,7 @@ public class UserService {
 
   public String insertUser(TUser tUser) {
     int insert = tUserMapper.insert(tUser);
-    logger.info(" result : " + insert);
+    logger.info("result : " + insert);
     logger.info("id : " + tUser.getId());
     return tUser.getId();
   }

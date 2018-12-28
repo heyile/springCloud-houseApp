@@ -2,9 +2,12 @@ package com.huawei.user.cseuserservice.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.huawei.user.cseuserservice.entity.TUser;
 import com.huawei.user.cseuserservice.service.UserService;
@@ -25,35 +27,39 @@ public class UserController {
   @Autowired
   UserService userService;
 
-  @ResponseBody
   @PostMapping(value = "/register")
-  public String registerUser(@RequestBody TUser tUser) {
+  public ResponseEntity<String> registerUser(@RequestBody TUser tUser) {
     if (tUser == null) {
-      logger.error("when register user, user is null");
-      return null;
+      logger.error("when register user, user can not be null");
+      return ResponseEntity.badRequest().build();
     }
-    return userService.insertUser(tUser);
+    return ResponseEntity.ok(userService.insertUser(tUser));
   }
 
-  @ResponseBody
   @DeleteMapping(value = "/unRegister")
-  public void unRegister(@RequestParam("id") String id) {
+  public ResponseEntity<String> unRegister(@RequestParam("id") String id) {
+    if (StringUtils.isBlank(id)) {
+      return ResponseEntity.badRequest().body("id can not be empty");
+    }
     userService.deleteUserById(id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(String.format("删除 %s成功", id));
   }
 
-  @ResponseBody
   @GetMapping(value = "/getUserInfoById")
-  public TUser getUserInfoById(@RequestParam("id") String id) {
-    return userService.findUserById(id);
+  public ResponseEntity<TUser> getUserInfoById(@RequestParam("id") String id) {
+    if (StringUtils.isBlank(id)) {
+      return ResponseEntity.badRequest().build();
+    }
+    return ResponseEntity.ok(userService.findUserById(id));
   }
 
   @GetMapping(value = "/getAllUser")
-  @ResponseBody
-  public List<TUser> getAllUser() {
+  public ResponseEntity<List<TUser>> getAllUser() {
     List<TUser> user = userService.getAllUsers();
     if (user.size() == 0) {
       logger.warn(" user list is empty");
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    return user;
+    return ResponseEntity.ok(user);
   }
 }

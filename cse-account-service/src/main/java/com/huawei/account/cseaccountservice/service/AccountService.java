@@ -70,6 +70,9 @@ public class AccountService {
       return 0;
     }
     double allMoney = tAccount.getRestMoney() - money;
+    if (allMoney < 0) {
+      return allMoney;
+    }
     updateMoney(id, allMoney);
     return allMoney;
   }
