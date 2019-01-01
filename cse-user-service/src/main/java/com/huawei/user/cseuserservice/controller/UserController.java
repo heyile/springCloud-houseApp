@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.huawei.user.cseuserservice.entity.TUser;
 import com.huawei.user.cseuserservice.service.UserService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @Controller
+@EnableCircuitBreaker
 @RequestMapping("/user")
 public class UserController {
   private final static Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -27,6 +30,7 @@ public class UserController {
   @Autowired
   UserService userService;
 
+  @HystrixCommand
   @PostMapping(value = "/register")
   public ResponseEntity<String> registerUser(@RequestBody TUser tUser) {
     if (tUser == null) {
@@ -36,6 +40,7 @@ public class UserController {
     return ResponseEntity.ok(userService.insertUser(tUser));
   }
 
+  @HystrixCommand
   @DeleteMapping(value = "/unRegister")
   public ResponseEntity<String> unRegister(@RequestParam("id") String id) {
     if (StringUtils.isBlank(id)) {
@@ -45,6 +50,7 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("删除 %s成功", id));
   }
 
+  @HystrixCommand
   @GetMapping(value = "/getUserInfoById")
   public ResponseEntity<TUser> getUserInfoById(@RequestParam("id") String id) {
     if (StringUtils.isBlank(id)) {
@@ -53,6 +59,7 @@ public class UserController {
     return ResponseEntity.ok(userService.findUserById(id));
   }
 
+  @HystrixCommand
   @GetMapping(value = "/getAllUser")
   public ResponseEntity<List<TUser>> getAllUser() {
     List<TUser> user = userService.getAllUsers();

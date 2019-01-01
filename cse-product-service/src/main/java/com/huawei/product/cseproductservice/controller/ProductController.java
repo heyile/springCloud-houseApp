@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.huawei.product.cseproductservice.entity.TProduct;
 import com.huawei.product.cseproductservice.service.ProductService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @Controller
+@EnableCircuitBreaker
 @RequestMapping(value = "/product")
 public class ProductController {
   private final static Logger logger = LoggerFactory.getLogger(ProductController.class);
@@ -28,6 +31,7 @@ public class ProductController {
   @Autowired
   private ProductService productService;
 
+  @HystrixCommand
   @PostMapping(value = "/createProduct")
   public ResponseEntity<String> createProduct(@RequestBody TProduct product) {
     if (product == null) {
@@ -37,6 +41,7 @@ public class ProductController {
     return ResponseEntity.ok(productService.insertProduct(product));
   }
 
+  @HystrixCommand
   @DeleteMapping(value = "/removeProduct")
   public ResponseEntity<String> removeProduct(@RequestParam("id") String id) {
     if (StringUtils.isBlank(id)) {
@@ -46,6 +51,7 @@ public class ProductController {
     return ResponseEntity.ok(String.format("删除 %s成功!", id));
   }
 
+  @HystrixCommand
   @GetMapping(value = "/getProductInfoById")
   public ResponseEntity<TProduct> getProductInfoById(@RequestParam("id") String id) {
     if (StringUtils.isBlank(id)) {
@@ -54,6 +60,7 @@ public class ProductController {
     return ResponseEntity.ok(productService.findProductById(id));
   }
 
+  @HystrixCommand
   @GetMapping(value = "/buy/{userId}")
   public ResponseEntity<String> buy(@RequestParam("id") String productId, @PathVariable("userId") String userId) {
     if (StringUtils.isBlank(productId) || StringUtils.isBlank(userId)) {
@@ -68,6 +75,7 @@ public class ProductController {
     }
   }
 
+  @HystrixCommand
   @GetMapping(value = "/cancelBuy/{userId}")
   public ResponseEntity<String> cancelBuy(@RequestParam("id") String productId, @PathVariable("userId") String userId) {
     if (StringUtils.isBlank(productId) || StringUtils.isBlank(userId)) {
@@ -82,7 +90,7 @@ public class ProductController {
     }
   }
 
-
+  @HystrixCommand
   @GetMapping(value = "/getAllProduct")
   public ResponseEntity<List<TProduct>> getAllProduct() {
     List<TProduct> product = productService.getAllProducts();
