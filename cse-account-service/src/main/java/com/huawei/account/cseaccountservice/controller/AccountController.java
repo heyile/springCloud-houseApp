@@ -61,7 +61,7 @@ public class AccountController {
     return ResponseEntity.ok(accountService.findAccountById(id));
   }
 
-  @GetMapping(value = "save")
+  @GetMapping(value = "/save")
   public ResponseEntity<String> saveMoney(@RequestParam("money") double money, @RequestParam("id") String id) {
     if (money < 0 || StringUtils.isBlank(id)) {
       return ResponseEntity.badRequest().build();
@@ -69,7 +69,7 @@ public class AccountController {
     return ResponseEntity.ok(accountService.saveMoney(id, money) + "");
   }
 
-  @GetMapping(value = "consume")
+  @GetMapping(value = "/consume")
   public ResponseEntity<String> consume(@RequestParam("money") double money, @RequestParam("id") String id) {
     if (money < 0 || StringUtils.isBlank(id)) {
       return ResponseEntity.badRequest().build();
