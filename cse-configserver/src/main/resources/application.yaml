@@ -14,14 +14,14 @@ eureka:
   client:
     serviceUrl:
       defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
-    enabled: ${EUREKA_ENABLED:false}
+    enabled: ${EUREKA_ENABLED:true}
   instance:
     prefer-ip-address: true
     ip-address: ${CONFIG_SERVER_IP:127.0.0.1}
     non-secure-port-enabled: ${CONFIG_SERVER_SSL_NON_SECURE_PORT_ENABLED:true}
-    non-secure-port: ${REGISTER_PORT:31010}
+    non-secure-port: ${REGISTER_PORT:8888}
     secure-port-enabled: ${CONFIG_SERVER_SSL_ENABLED:false}
-    secure-port: ${REGISTER_PORT:31010}
+    secure-port: ${REGISTER_PORT:8888}
 
 
 
