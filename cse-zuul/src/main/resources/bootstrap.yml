@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: zuul-service
   cloud:
     config:
       discovery:
@@ -6,4 +8,3 @@ spring:
         service-id: config-server
       profile: dev
       label: master
-      name: zuul-service

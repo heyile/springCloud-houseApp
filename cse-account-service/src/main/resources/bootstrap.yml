@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: account-service
   cloud:
     config:
       discovery:
@@ -6,5 +8,4 @@ spring:
         service-id: config-server
       profile: dev
       label: master
-      name: account-service
 

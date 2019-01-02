@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: product-service
   cloud:
     config:
       discovery:
@@ -6,4 +8,3 @@ spring:
         service-id: config-server
       profile: dev
       label: master
-      name: product-service
