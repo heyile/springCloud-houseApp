@@ -1,0 +1,286 @@
+swagger: "2.0"
+info:
+  title: Eureka Config Server Rest Api
+  description: "spring cloud eureka 和 config server 前端界面融合 rest api"
+  version: 1.0.0
+host: "localhost"
+basePath: "/"
+tags:
+  - name: "eureka"
+    description: euerka rest api
+    externalDocs:
+      description: "详情可参考 : "
+      url: https://github.com/Netflix/eureka/wiki/Eureka-REST-operations
+  - name: "config_server"
+    description: config server rest api
+schemes:
+  - http
+  - https
+paths:
+  /eureka/apps:
+    get:
+      tags:
+        - "eureka"
+      description: "返回所有的 eureka instances"
+      produces:
+        - 'application/json'
+        - 'application/xml'
+      responses:
+        200:
+          description: "调用成功"
+  /eureka/apps/{appId}:
+    post:
+      tags:
+        - "eureka"
+      summary: "注册一个新的eureka实例"
+      parameters:
+        - name: "appId"
+          required: true
+          type: string
+          in: "path"
+          description: "注册eureka的 application name"
+      produces:
+        - 'application/json'
+        - 'application/xml'
+      responses:
+        204:
+          description: "注册成功"
+    get:
+      tags:
+        - "eureka"
+      summary: "获取eureka 指定 application name下的所有instances 实例"
+      parameters:
+        - name: "appId"
+          in: path
+          required: true
+          type: string
+          description: " eureka的 application name"
+      produces:
+        - 'application/json'
+        - 'application/xml'
+      responses:
+        200:
+          description: "查询成功"
+  /eureka/apps/{appId}/{instanceId}:
+    delete:
+      tags:
+        - "eureka"
+      summary: "删除eureka 指定 application name 下的 instance 实例"
+      parameters:
+        - name: "appId"
+          required: true
+          type: string
+          in: path
+          description: " eureka的 application name"
+        - name: "instanceId"
+          required: true
+          type: string
+          in: path
+          description: " instance 的 instanceId"
+      responses:
+        200:
+          description: 成功删除
+    put:
+      tags:
+        - "eureka"
+      summary: "维持eureka 指定 application name 下的 instance 实例的 心跳"
+      parameters:
+        - name: "appId"
+          required: true
+          type: string
+          in: path
+          description: " eureka的 application name"
+        - name: "instanceId"
+          required: true
+          type: string
+          in: path
+          description: " instance 的 instanceId"
+      responses:
+        200:
+          description: 心跳维持成功
+        404:
+          description: instanceId 不存在
+    get:
+      tags:
+        - "eureka"
+      summary: "精确查询 eureka 的 instance 信息"
+      parameters:
+        - name: "appId"
+          required: true
+          type: string
+          in: path
+          description: " eureka的 application name"
+        - name: "instanceId"
+          in: path
+          required: true
+          type: string
+          description: " instance 的 instanceId"
+      produces:
+        - 'application/json'
+        - 'application/xml'
+      responses:
+        200:
+          description: 查询成功
+  /eureka/apps/instances/{instanceId}:
+    get:
+      tags:
+        - "eureka"
+      summary: "精确查询对应的instance"
+      parameters:
+        - name: "instanceId"
+          required: true
+          type: string
+          in: path
+          description: "instance 的  instanceId"
+      produces:
+        - 'application/json'
+        - 'application/xml'
+      responses:
+        200:
+          description: 查询成功
+  /eureka/apps/{appId}/{instanceId}/status:
+    put:
+      tags:
+        - "eureka"
+      summary: "下线 eureka instance"
+      parameters:
+        - name: "appId"
+          required: true
+          type: string
+          in: path
+          description: " eureka的 application name"
+        - name: "instanceId"
+          required: true
+          type: string
+          in: path
+          description: " instance 的 instanceId"
+        - name: "value"
+          required: true
+          type: string
+          in: query
+          enum:
+            - OUT_OF_SERVICE
+      responses:
+        200:
+          description: 成功下线 instance
+        500:
+          description: 下线 instance 实例失败
+    delete:
+      tags:
+        - "eureka"
+      # Move instance back into service
+      summary: "重新上线 eureka instance"
+      parameters:
+        - name: "appId"
+          required: true
+          type: string
+          in: path
+          description: " eureka的 application name"
+        - name: "instanceId"
+          required: true
+          type: string
+          in: path
+          description: " instance 的 instanceId"
+        - name: "value"
+          required: false
+          type: string
+          in: query
+          enum:
+            - UP
+      responses:
+        200:
+          description: 成功上线 instance
+        500:
+          description: 上线 instance 实例失败
+  /eureka/vips/{vipAddress}:
+    get:
+      tags:
+        - "eureka"
+      summary: "查询在 某个vipAddress 下所有的 instances, 对应 http"
+      parameters:
+        - name: vipAddress
+          required: true
+          type: string
+          in: path
+          description: "要查询的vipAddress"
+      produces:
+        - 'application/json'
+        - 'application/xml'
+      responses:
+        200:
+          description: 查询成功
+        404:
+          description: 查询的 vipAddresss 不存在
+  /eureka/svips/{svipAddress}:
+    get:
+      tags:
+        - "eureka"
+      summary: "查询某个 Secure vip address 下的所有 instances. 对应 https"
+      parameters:
+        - name: svipAddress
+          required: true
+          type: string
+          in: path
+          description: 要查询的 svipAddress
+      produces:
+        - 'application/json'
+        - 'application/xml'
+      responses:
+        200:
+          description: 查询成功
+        404:
+          description: 查询的 svipAddresss 不存在
+
+  # config server 本来没有啥api ,只有一套自定义的解析规则
+  #/{application}/{profile}[/{label}]
+  #/{application}-{profile}.yml
+  #/{label}/{application}-{profile}.yml
+  #/{application}-{profile}.properties
+  #/{label}/{application}-{profile}.properties
+  /{application}/{profile}:
+    get:
+      tags:
+        - "config_server"
+      summary: 查询默认master 分支下,指定 application 和 profile 的配置. 对应配置文件 application-profile.yaml 和 公共配置文件 application.yaml
+      parameters:
+        - name: application
+          required: true
+          type: string
+          in: path
+          description: "查询配置文件的 application"
+        - name: profile
+          required: true
+          type: string
+          in: path
+          description: "查询的配置文件的 profile 例如 dev test"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "查询成功"
+  /{application}/{profile}/{label}:
+    get:
+      tags:
+        - "config_server"
+      summary: 查询指定分支下,指定 application 和 profile 的配置. 对应改分支下配置文件 application-profile.yaml 和 公共配置文件 application.yaml
+      parameters:
+        - name: application
+          required: true
+          type: string
+          in: path
+          description: "查询配置文件的 application"
+        - name: profile
+          required: true
+          type: string
+          in: path
+          description: "查询的配置文件的 profile 例如 dev test"
+        - name: label
+          required: true
+          type: string
+          in: path
+          description: "指定 的 git 分支. 例如 master"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "查询成功"
