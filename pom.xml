@@ -12,6 +12,12 @@
     <module>cse-eureka</module>
     <module>cse-account-service</module>
     <module>cse-configserver</module>
+    <module>cse-customer-service</module>
+    <module>cse-hystrix</module>
+    <module>cse-turbine</module>
+    <module>cse-user-service</module>
+    <module>cse-zuul</module>
+    <module>cse-product-service</module>
   </modules>
 
 

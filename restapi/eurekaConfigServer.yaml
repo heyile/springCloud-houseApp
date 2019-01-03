@@ -28,6 +28,8 @@ paths:
       responses:
         200:
           description: "调用成功"
+          schema:
+            $ref: '#/definitions/QueryAppsResp'
   /eureka/apps/{appId}:
     post:
       tags:
@@ -39,6 +41,12 @@ paths:
           type: string
           in: "path"
           description: "注册eureka的 application name"
+        - name: "instance"
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/InstanceInfo'
+          description: "注册的eureka实体信息"
       produces:
         - 'application/json'
         - 'application/xml'
@@ -61,6 +69,8 @@ paths:
       responses:
         200:
           description: "查询成功"
+          schema:
+            $ref: '#/definitions/QueryAppResp'
   /eureka/apps/{appId}/{instanceId}:
     delete:
       tags:
@@ -121,7 +131,9 @@ paths:
       responses:
         200:
           description: 查询成功
-  /eureka/apps/instances/{instanceId}:
+          schema:
+            $ref: '#/definitions/QueryInstanceResp'
+  /eureka/instances/{instanceId}:
     get:
       tags:
         - "eureka"
@@ -138,6 +150,8 @@ paths:
       responses:
         200:
           description: 查询成功
+          schema:
+            $ref: '#/definitions/QueryInstanceResp'
   /eureka/apps/{appId}/{instanceId}/status:
     put:
       tags:
@@ -209,6 +223,8 @@ paths:
       responses:
         200:
           description: 查询成功
+          schema:
+            $ref: '#/definitions/QueryAppsResp'
         404:
           description: 查询的 vipAddresss 不存在
   /eureka/svips/{svipAddress}:
@@ -228,6 +244,8 @@ paths:
       responses:
         200:
           description: 查询成功
+          schema:
+            $ref: '#/definitions/QueryAppsResp'
         404:
           description: 查询的 svipAddresss 不存在
 
@@ -258,6 +276,8 @@ paths:
       responses:
         200:
           description: "查询成功"
+          schema:
+            $ref: '#/definitions/Environment'
   /{application}/{profile}/{label}:
     get:
       tags:
@@ -284,3 +304,199 @@ paths:
       responses:
         200:
           description: "查询成功"
+          schema:
+            $ref: '#/definitions/Environment'
+definitions:
+  QueryAppsResp:
+    type: object
+    properties:
+      applications:
+        $ref: '#/definitions/Applications'
+  QueryAppResp:
+    type: object
+    properties:
+      application:
+        $ref: '#/definitions/Application'
+  QueryInstanceResp:
+    type: object
+    properties:
+      instance:
+        $ref: '#/definitions/InstanceInfo'
+  Applications:
+    type: object
+    properties:
+      versions__delta:
+        type: string
+      apps__hashcode:
+        type: string
+      application:
+        type: array
+        items:
+          $ref: '#/definitions/Application'
+
+  Application:
+    type: object
+    properties:
+      name:
+        type: string
+      instance:
+        type: array
+        items:
+          $ref: '#/definitions/InstanceInfo'
+
+  InstanceInfo:
+    type: object
+    properties:
+      instanceId:
+        type: string
+      app:
+        type: string
+      appGroupName:
+        type: string
+      ipAddr:
+        type: string
+      sid:
+        type: string
+      port:
+        $ref: '#/definitions/PortWrapper'
+        description: "http 端口"
+      securePort:
+        $ref: '#/definitions/PortWrapper'
+        description: "https 端口"
+      homePageUrl:
+        type: string
+      statusPageUrl:
+        type: string
+      healthCheckUrl:
+        type: string
+      secureHealthCheckUrl:
+        type: string
+      vipAddress:
+        type: string
+      secureVipAddress:
+        type: string
+      countryId:
+        type: integer
+        format: int32
+      dataCenterInfo:
+        $ref: '#/definitions/DataCenterInfo'
+      hostName:
+        type: string
+      status:
+        type: string
+        enum:
+          - UP
+          - DOWN
+          - STARTING
+          - OUT_OF_SERVICE
+          - UNKNOWN
+      overriddenstatus:
+        type: string
+        enum:
+          - UP
+          - DOWN
+          - STARTING
+          - OUT_OF_SERVICE
+          - UNKNOWN
+      leaseInfo:
+        $ref: '#/definitions/LeaseInfo'
+      isCoordinatingDiscoveryServer:
+        type: boolean
+      metadata:
+        description: 存储在eureka的 元数据 以键值对的形式存在
+        type: object
+        additionalProperties:
+          type: string
+      lastUpdatedTimestamp:
+        type: integer
+        format: int64
+      lastDirtyTimestamp:
+        type: integer
+        format: int64
+      actionType:
+        type: string
+        enum:
+          - ADDED # Added in the discovery server
+          - MODIFIED # Changed in the discovery server
+          - DELETED # Deleted from the discovery server
+      asgName:
+        type: string
+  PortWrapper:
+    type: object
+    properties:
+      "@enabled":
+        type: boolean
+        description: 是否启用 该端口
+      "$":
+        type: integer
+        format: int32
+        description: 端口
+  DataCenterInfo:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 数据中心
+        enum:
+          - Netflix
+          - Amazon
+          - MyOwn
+      "@class":
+        type: string
+  LeaseInfo:
+    type: object
+    properties:
+      renewalIntervalInSecs:
+        type: integer
+        format: int32
+        default: 30
+      durationInSecs:
+        type: integer
+        format: int32
+        default: 90
+      registrationTimestamp:
+        type: integer
+        format: int64
+      lastRenewalTimestamp:
+        type: integer
+        format: int64
+      renewalTimestamp:
+        type: integer
+        format: int64
+      evictionTimestamp:
+        type: integer
+        format: int64
+      serviceUpTimestamp:
+        type: integer
+        format: int64
+  Environment:
+    type: object
+    properties:
+      name:
+        type: string
+      profiles:
+        type: array
+        items:
+          type: string
+      label:
+        type: string
+      version:
+        type: string
+      state:
+        type: string
+      propertySources:
+        type: array
+        items:
+          $ref: '#/definitions/PropertySource'
+
+  PropertySource:
+    type: object
+    properties:
+      name:
+        type: string
+        description: "文件路径名"
+      source:
+        type: object
+        description: "用键值对 存储 文件中的配置"
+        additionalProperties:
+          type: string
